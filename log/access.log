@@ -1,0 +1,2 @@
+127.0.0.1 - - [18/Jul/2019:11:48:24 +0200] "GET / HTTP/1.1" 200 208 "-" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36"
+127.0.0.1 - - [18/Jul/2019:11:48:24 +0200] "GET /favicon.ico HTTP/1.1" 404 511 "http://php-rest-api-mvc.com/" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36"
