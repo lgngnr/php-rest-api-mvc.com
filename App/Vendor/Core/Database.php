@@ -1,4 +1,5 @@
 <?php
+    namespace Vendor\Core;
 
     /**
      * Database class
@@ -18,20 +19,20 @@
         /**
          * __construct function
          * Istantiace a new PDO persistent connection
-         * @throws PDOException
+         * @throws \PDOException
          */
         public function __construct()
         {
             // prepare dns and options
             $dns = "mysql:host=" . $this->db_host . ";dbname=" . $this->db_name;
             $options = array(
-                PDO::ATTR_PERSISTENT => true,
-                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
+                \PDO::ATTR_PERSISTENT => true,
+                \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION
             );
             // Create connection
             try
             {
-                $this->conn = new PDO($dns, $this->db_user, $this->db_pass, $options);
+                $this->conn = new \PDO($dns, $this->db_user, $this->db_pass, $options);
             }
             catch(PDOException $e)
             {
@@ -79,16 +80,16 @@
                 switch(true)
                 {
                     case is_int($value):
-                        $type = PDO::PARAM_INT;
+                        $type = \PDO::PARAM_INT;
                         break;
                     case is_bool($type):
-                        $type = PDO::PARAM_BOOL;
+                        $type = \PDO::PARAM_BOOL;
                         break;
                     case is_null($type):
-                        $type = PDO::PARAM_NULL;
+                        $type = \PDO::PARAM_NULL;
                         break;
                     default:
-                        $type = PDO::PARAM_STR;
+                        $type = \PDO::PARAM_STR;
                 }
             }
 
@@ -114,7 +115,7 @@
         public function resultSet()
         {
             $this->stmt->execute();
-            return $this->stmt->fetchAll(PDO::FETCH_OBJ);
+            return $this->stmt->fetchAll(\PDO::FETCH_OBJ);
         }
 
         /**
@@ -125,7 +126,7 @@
         public function single()
         {
             $this->stmt->execute();
-            return $this->stmt->fetch(PDO::FETCH_OBJ);
+            return $this->stmt->fetch(\PDO::FETCH_OBJ);
         }
 
         /**
