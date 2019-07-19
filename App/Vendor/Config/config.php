@@ -1,7 +1,7 @@
 <?php
     // SERVER/URL CONST
-    define ('DOCUMENT_ROOT', $_SERVER['DOCUMENT_ROOT']);
-    define ('APP_ROOT', dirname($_SERVER['DOCUMENT_ROOT']) . '/App');
+    define ('DOCUMENT_ROOT', dirname(dirname(dirname(__DIR__))));
+    define ('APP_ROOT', dirname(dirname(__DIR__)));
     define ('URL_ROOT', 'http://php-rest-api-mvc.com');
 
     // DB Params
