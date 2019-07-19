@@ -35,5 +35,51 @@
             }
         }
 
+        // Create a prepared statement
+        public function query($sql)
+        {
+            try
+            {
+                $this->stmt = $this->conn->prepare($sql);
+            }
+            catch(PDOException $e)
+            {
+                $this->error = $e->getMessage();
+                echo $this->error;
+            }
+        }
+
+        // Bind values to stmt
+        public function bind($param, $value, $type = null)
+        {
+            if(is_null($type))
+            {
+                // Bind correct param type
+                switch(true)
+                {
+                    case is_int($value):
+                        $type = PDO::PARAM_INT;
+                        break;
+                    case is_bool($type):
+                        $type = PDO::PARAM_BOOL;
+                        break;
+                    case is_null($type):
+                        $type = PDO::PARAM_NULL;
+                        break;
+                    default:
+                        $type = PDO::PARAM_STR;
+                }
+            }
+
+            try
+            {
+                $this->stmst->bindValue($param, $value, $type);
+            }
+            catch(PDOException $e){
+                $this->error = $e->getMessage();
+                echo $this->error;
+            }
+        }
+
     }
 ?>
