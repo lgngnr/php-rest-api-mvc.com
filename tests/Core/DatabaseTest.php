@@ -55,5 +55,17 @@
             $this->assertTrue($this->db->bind(':name', "test"));
             $this->assertTrue($this->db->bind(':name', 1.0));
         }
+
+        /**
+         * testExecute function, it should return true if query executed
+         * @test
+         */
+        public function testExecute()
+        {
+            // Test query
+            $sql = "SELECT * FROM products";
+            $this->assertTrue($this->db->query($sql));
+            $this->assertTrue($this->db->execute());
+        }
     }
 ?>
