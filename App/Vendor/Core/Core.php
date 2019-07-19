@@ -11,7 +11,7 @@
     class Core
     {
 
-        const DEFAULT_CONTROLLER = "Home";
+        const DEFAULT_CONTROLLER = "Vendor\Controllers\Home";
         const DEFAULT_METHOD = "index";
 
         protected $current_controller = self::DEFAULT_CONTROLLER;
@@ -28,16 +28,14 @@
             if(class_exists($controller_class))
             {
                 // Update current controller
-                $this->current_controller = ucwords($url[0]);
-            }else{
-                die ("Class " . $controller_class . " not exists");
+                $this->current_controller = $controller_class;
             }
 
             // Unset first index
             unset($url[0]);
 
             // Load the controller
-            $this->current_controller = new $controller_class;
+            $this->current_controller = new $this->current_controller;
 
             // Check for method
             if(isset($url[1]))
