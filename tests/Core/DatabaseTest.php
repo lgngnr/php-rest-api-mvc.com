@@ -14,30 +14,46 @@
     {
         private $db;
 
+        public function setUp() : void
+        {
+            $this->db = new Database; 
+        }
+
         /**
          * testIstantiateDb function
          * @test
          */
         public function testIstantiateDb()
         {
-            $this->db = new Database;
             $this->assertInstanceOf(Database::class, $this->db);
         }
 
         /**
          * testQuery function, should return true
-         * @depends testIstantiateDb
          * @test
          */
         public function testQuery()
         {
-            $this->db = new Database;
             // Test query
             $sql = "SELECT * FROM products";
             $this->assertTrue($this->db->query($sql));
-
         }
 
-        
+        /**
+         * testBind function, it should return true if bind complete
+         * @test
+         */
+        public function testBind()
+        {
+            // Test query
+            $sql = "INSERT 
+                    INTO products(name, category_id, description, price) 
+                    VALUES(:name, :category_id, :description, :price)";
+            $this->assertTrue($this->db->query($sql));
+            $this->assertTrue($this->db->bind(':name', "test"));
+            $this->assertTrue($this->db->bind(':name', 0));
+            $this->assertTrue($this->db->bind(':name', "test"));
+            $this->assertTrue($this->db->bind(':name', 1.0));
+        }
     }
 ?>
