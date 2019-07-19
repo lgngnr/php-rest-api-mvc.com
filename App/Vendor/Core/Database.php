@@ -15,6 +15,11 @@
         private $stmt;
         private $error;
 
+        /**
+         * __construct function
+         * Istantiace a new PDO persistent connection
+         * @throws PDOException
+         */
         public function __construct()
         {
             // prepare dns and options
@@ -41,19 +46,10 @@
          *
          * @param [string] $sql
          * @return void
-         * @throws PDOException
          */
         public function query($sql)
         {
-            try
-            {
-                $this->stmt = $this->conn->prepare($sql);
-            }
-            catch(PDOException $e)
-            {
-                $this->error = $e->getMessage();
-                echo $this->error;
-            }
+            $this->stmt = $this->conn->prepare($sql);
         }
 
         /**
@@ -86,16 +82,17 @@
                 }
             }
 
-            try
-            {
-                $this->stmst->bindValue($param, $value, $type);
-            }
-            catch(PDOException $e){
-                $this->error = $e->getMessage();
-                echo $this->error;
-            }
+            $this->stmst->bindValue($param, $value, $type);
         }
 
+        /**
+         * execute function
+         * execute the prepared statement
+         * @return boolean
+         */
+        public function execute(){
+            return $this->stms->execute();
+        }
 
     }
 ?>
