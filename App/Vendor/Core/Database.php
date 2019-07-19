@@ -45,11 +45,21 @@
          * Create a prepared statement
          *
          * @param [string] $sql
-         * @return void
+         * @return boolean
          */
         public function query($sql)
         {
             $this->stmt = $this->conn->prepare($sql);
+            if($this->stmt)
+            {   
+                // Success
+                return true;
+            }
+            else
+            {
+                // Failure
+                return false;
+            }
         }
 
         /**
@@ -59,7 +69,7 @@
          * @param [string] $param
          * @param [variable] $value
          * @param [int] $type
-         * @return void
+         * @return boolean
          */
         public function bind($param, $value, $type = null)
         {
@@ -82,7 +92,7 @@
                 }
             }
 
-            $this->stmt->bindValue($param, $value, $type);
+            return $this->stmt->bindValue($param, $value, $type);
         }
 
         /**
