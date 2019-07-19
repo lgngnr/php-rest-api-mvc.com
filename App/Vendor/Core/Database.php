@@ -82,7 +82,7 @@
                 }
             }
 
-            $this->stmst->bindValue($param, $value, $type);
+            $this->stmt->bindValue($param, $value, $type);
         }
 
         /**
@@ -90,8 +90,42 @@
          * execute the prepared statement
          * @return boolean
          */
-        public function execute(){
-            return $this->stms->execute();
+        public function execute()
+        {
+            return $this->stmt->execute();
+        }
+
+        /**
+         * resultSet function
+         * Execute the prepared statement, return records as array of obj
+         *
+         * @return array
+         */
+        public function resultSet()
+        {
+            $this->stmt->execute();
+            return $this->stmt->fetchAll(PDO::FETCH_OBJ);
+        }
+
+        /**
+         * single function
+         * Execut prepared statement, return record as obj
+         * @return object
+         */
+        public function single()
+        {
+            $this->stmt->execute();
+            return $this->stmt->fetch(PDO::FETCH_OBJ);
+        }
+
+        /**
+         * rowCount function
+         *  Return numer of records
+         * @return integer
+         */
+        public function rowCount()
+        {
+            return $this->stmt->rowCount();
         }
 
     }
