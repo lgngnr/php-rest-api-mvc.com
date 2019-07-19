@@ -67,5 +67,21 @@
             $this->assertTrue($this->db->query($sql));
             $this->assertTrue($this->db->execute());
         }
+
+        /**
+         * testResultSet function, it should return array of objs
+         * @test
+         */
+        public function testResultSet()
+        {
+            // Test query
+            $sql = "SELECT * FROM products";
+            $this->assertTrue($this->db->query($sql));
+            $records = $this->db->resultSet();
+            $this->assertIsArray($records);
+            foreach($records as $record){
+                $this->assertIsObject($record);
+            }
+        }
     }
 ?>
