@@ -35,7 +35,14 @@
             }
         }
 
-        // Create a prepared statement
+        /**
+         * query function
+         * Create a prepared statement
+         *
+         * @param [string] $sql
+         * @return void
+         * @throws PDOException
+         */
         public function query($sql)
         {
             try
@@ -49,7 +56,15 @@
             }
         }
 
-        // Bind values to stmt
+        /**
+         * bind function
+         * Bind values to stmt
+         *
+         * @param [string] $param
+         * @param [variable] $value
+         * @param [int] $type
+         * @return void
+         */
         public function bind($param, $value, $type = null)
         {
             if(is_null($type))
@@ -80,6 +95,7 @@
                 echo $this->error;
             }
         }
+
 
     }
 ?>
