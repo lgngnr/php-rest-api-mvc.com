@@ -83,5 +83,21 @@
                 $this->assertIsObject($record);
             }
         }
+
+        /**
+         * testSingle function, it should return an obj
+         * @test
+         */
+        public function testSingle()
+        {
+            // Test query
+            $sql = "SELECT * FROM products";
+            $this->assertTrue($this->db->query($sql));
+            $records = $this->db->resultSet();
+            $this->assertIsArray($records);
+            foreach($records as $record){
+                $this->assertIsObject($record);
+            }
+        }
     }
 ?>
