@@ -9,7 +9,8 @@
      * URL format: /controller/method/params
      */
 
-    class Core{
+    class Core
+    {
 
         const DEFAULT_CONTROLLER = "Home";
         const DEFAULT_METHOD = "index";

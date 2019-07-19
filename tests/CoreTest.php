@@ -5,7 +5,8 @@
     /**
      * Example Test Case writeen mainly to test namespacing
      */
-    class CoreTest extends TestCase{
+    class CoreTest extends TestCase
+    {
         /** 
          * It should create an istance of Vendor\Core\Core Class 
          * @test
