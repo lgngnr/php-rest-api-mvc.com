@@ -18,7 +18,7 @@
          */
         public static function redirect($path)
         {
-            header('location: ' . URL_ROOT . "/$path");
+            header('location: /' . $path);
         }
     }
 ?>
