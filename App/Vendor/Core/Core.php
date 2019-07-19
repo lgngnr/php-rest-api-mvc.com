@@ -1,7 +1,6 @@
 <?php
 
     namespace Vendor\Core;
-    use Vendor\Controllers as Controllers;
 
     /**
      * Class Core
@@ -21,25 +20,24 @@
 
         public function __construct()
         {
-            echo "Core construct";
-
             // GET parsed url
             $url = $this->getUrl();
 
-            // Check if the controller exist
-            if(file_exists("../Controllers/" . ucwords($url[0]) . '.php'))
+            // Check if the controller class exist
+            $controller_class = "Vendor\Controllers\\" . ucwords($url[0]);
+            if(class_exists($controller_class))
             {
                 // Update current controller
                 $this->current_controller = ucwords($url[0]);
+            }else{
+                die ("Class " . $controller_class . " not exists");
             }
 
             // Unset first index
             unset($url[0]);
 
-            // Controller name include namespace
-            $controller = "Controllers\\" . $this->current_controller;
             // Load the controller
-            $this->current_controller = new $controller;
+            $this->current_controller = new $controller_class;
 
             // Check for method
             if(isset($url[1]))
@@ -80,4 +78,3 @@
             
         }
     }
-?>
