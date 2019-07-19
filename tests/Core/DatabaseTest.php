@@ -93,11 +93,22 @@
             // Test query
             $sql = "SELECT * FROM products";
             $this->assertTrue($this->db->query($sql));
-            $records = $this->db->resultSet();
-            $this->assertIsArray($records);
-            foreach($records as $record){
-                $this->assertIsObject($record);
-            }
+            $record = $this->db->single();
+            $this->assertIsObject($record);
+        }
+
+        /**
+         * testRowCount function, it should return an integer
+         * @test
+         */
+        public function testRowCount()
+        {
+            // Test query
+            $sql = "SELECT * FROM products";
+            $this->assertTrue($this->db->query($sql));
+            $records = $this->db->single();
+            $this->assertIsInt($this->db->rowCount());
+            $this->assertEquals(1, $this->db->rowCount());
         }
     }
 ?>
