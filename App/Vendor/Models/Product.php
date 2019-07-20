@@ -19,5 +19,18 @@
             $this->db = new Database;
         }
 
+        /**
+         * create() function Crud
+         * Insert new product
+         *
+         * @return void
+         */
+        public function create($data)
+        {
+            $this->db->query("INSERT 
+                INTO products(name, category_id, description, price)
+                VALUES(:name, :category_id, :description, : price)");
+        }
+
     }
 ?>
