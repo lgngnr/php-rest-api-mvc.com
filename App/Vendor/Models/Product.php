@@ -9,6 +9,7 @@
     class Product
     {
         private $db;
+        private $id;
         private $name;
         private $category_id;
         private $description;
@@ -59,7 +60,46 @@
             }
         }
 
+        /**
+         * read() function cRud
+         * Get a product
+         *
+         * @return Product 
+         */
+        public function read($id)
+        {
+            // Prepare query
+            $sql = "SELECT * FROM products WHERE id = :id";
+            // Prepare statement
+            $this->db->query($sql);
+            // Bind params
+            $this->db->bind(':id', $id);
+            // Execute query & check result
+            $res = $this->db->single();
+            if($res)
+            {
+                // Fill model
+                $this->id = $res->id;
+                $this->name = $res->name;
+                $this->category_id = $res->category_id;
+                $this->description = $res->description;
+                $this->price = $res->price;
+                return $this;
+            }
+            else
+            {
+                // Something goes wrong
+                return false;
+            }
+        }
 
+        /**
+         * Get the value of id
+         */ 
+        public function getId()
+        {
+                return $this->id;
+        }
         /**
          * Get the value of name
          */ 
