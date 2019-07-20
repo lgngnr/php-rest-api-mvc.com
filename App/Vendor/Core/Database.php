@@ -141,7 +141,7 @@
 
         /**
          * lastInsertId function
-         *  Return lasi id inserted
+         *  Return last id inserted
          * @return string
          */
         public function lastInsertId()
