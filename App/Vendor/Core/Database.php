@@ -139,5 +139,15 @@
             return $this->stmt->rowCount();
         }
 
+        /**
+         * lastInsertId function
+         *  Return lasi id inserted
+         * @return string
+         */
+        public function lastInsertId()
+        {
+            return $this->stmt->lastInsertId();
+        }
+
     }
 ?>
