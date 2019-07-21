@@ -18,6 +18,10 @@
         private const CATEGORY_ID_TEST = 654;
         private const DESCRIPTION_TEST = 'test description';
         private const PRICE_TEST = 9.9;
+        // UPDATE values
+        private const UPDATE = '_updated';
+        private const UPDATE_CATEGORY_ID = 111;
+        private const UPDATE_PRICE = 11.11;
 
         private $productModel;
 
@@ -80,5 +84,35 @@
             return $id;
         }
 
+        /**
+         * testUpdate function
+         * It should update the previous inserted test product
+         *
+         * @param string $id
+         * @depends testRead
+         * @return string $id
+         */
+        public function testUpdate($id){
+            // Read the product
+            $product = $this->productModel->read($id);
+            $product->setName($product->getName() . self::UPDATE);
+            $product->setCategory_id(self::UPDATE_CATEGORY_ID);
+            $product->setDescription($product->getDescription() . self::UPDATE);
+            $product->setPrice(self::UPDATE_PRICE);
+
+            // Update product
+            $res = $this->productModel->update($product);
+            // Check for failure
+            $this->assertNotFalse($res);
+
+            // Read the product
+            $productUpdated = $this->productModel->read($id);
+            // Check fields updated
+            $this->assertEquals($productUpdated->getName(), $product->getName());
+            $this->assertEquals($productUpdated->getCategory_id(), $product->getCategory_id());
+            $this->assertEquals($productUpdated->getDescription(), $product->getDescription());
+            $this->assertEquals($productUpdated->getPrice(), $product->getPrice());
+            return $id;
+        }
     }
 ?>
