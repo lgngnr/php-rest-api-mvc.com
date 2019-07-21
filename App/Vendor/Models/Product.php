@@ -139,5 +139,34 @@
             // Execute query, return tru/false
             return $this->db->execute();
         }
+
+        /**
+         * readAll function
+         * return all products or a set if pagination
+         * 
+         * @param int $items - number products/page - default 20
+         * $param int $page - page number
+         * @return array of OBJs
+         */
+        public function readAll($items = 20, $page = null){
+            // Prepare query
+            $sql = "SELECT * FROM products";
+            // If $page is set, add pagination
+            if($page && $page > 0) 
+            {
+                $sql . " LIMIT :items, OFFSET :offset";
+                // Prepare query
+                $this->db->query($sql);
+                $offset = ($page - 1) * $items;
+                $this->db->bind(':items', $items);
+                $this->db->bind(':offset', $offset);
+            }  
+            else
+            {   // Prepare query
+                $this->db->query($sql);
+            }  
+
+            return $this->db->resultSet();
+        }
     }
 ?>
