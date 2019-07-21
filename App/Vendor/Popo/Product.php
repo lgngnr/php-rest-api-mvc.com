@@ -1,5 +1,5 @@
 <?php
-    namespace Vendore\Popo;
+    namespace Vendor\Popo;
 
     class Product {
         private $id;
