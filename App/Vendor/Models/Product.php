@@ -31,7 +31,7 @@
             // Prepare query
             $sql = "INSERT 
                     INTO products(name, category_id, description, price)
-                    VALUES(:name, :category_id, :description, : price)";
+                    VALUES(:name, :category_id, :description, :price)";
             // Prepare statement
             $this->db->query($sql);
             // Bind params
@@ -43,7 +43,7 @@
             if($this->db->execute())
             {
                 // Fill model
-                $product->setId = $this->db->lastInsertId();
+                $product->setId($this->db->lastInsertId());
                 return $product;
             }
             else
