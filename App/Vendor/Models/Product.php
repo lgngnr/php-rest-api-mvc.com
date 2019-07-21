@@ -101,9 +101,16 @@
                         name= :name, 
                         category_id = :category_id,
                         description = :description,
-                        price = :price";
+                        price = :price
+                    WHERE id = :id";
             // Prepare stmt
             $this->db->query($sql);
+            //Bind Params
+            $this->db->bind(':name', $product->getName());
+            $this->db->bind(':category_id', $product->getCategory_id());
+            $this->db->bind(':description', $product->getDescription());
+            $this->db->bind(':price', $product->getPrice());
+            $this->db->bind(':id', $product->getId());
             // Execute query
             if($this->db->execute())
             { // Success
@@ -113,6 +120,24 @@
             { // Failure
                 return false;
             }
+        }
+
+        /**
+         * delete function cruD
+         * delete a product by a given id
+         * @param int $id
+         * @return bool success/failure
+         */
+        public function delete($id){
+            // Prepare query
+            $sql = "DELETE FROM products WHERE id = :id";
+            // Bind param
+            $this->db->bind(':id', $id);
+            // Prepare stmt
+            $this->db->query($sql);
+
+            // Execute query, return tru/false
+            return $this->db->execute();
         }
     }
 ?>
