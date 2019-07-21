@@ -74,11 +74,11 @@
                 // Create new Product POPO
                 $product = new Popo\Product;
                 // Fill model
-                $product->seId = $res->id;
-                $product->setName = $res->name;
-                $product->setCategory_id = $res->category_id;
-                $product->setDescription = $res->description;
-                $product->setPrice = $res->price;
+                $product->setId($res->id);
+                $product->setName($res->name);
+                $product->setCategory_id($res->category_id);
+                $product->setDescription($res->description);
+                $product->setPrice($res->price);
                 return $product;
             }
             else
