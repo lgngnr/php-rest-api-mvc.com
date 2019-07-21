@@ -87,6 +87,32 @@
                 return false;
             }
         }
-        
+
+        /**
+         * update function crUd
+         * modify fields for an existing record
+         * 
+         * @param Popo\Product $product
+         * @return Popo\Product
+         */
+        public function update($product){
+            // Prepare query
+            $sql = "UPDATE products SET 
+                        name= :name, 
+                        category_id = :category_id,
+                        description = :description,
+                        price = :price";
+            // Prepare stmt
+            $this->db->query($sql);
+            // Execute query
+            if($this->db->execute())
+            { // Success
+                return $product;
+            }
+            else
+            { // Failure
+                return false;
+            }
+        }
     }
 ?>
