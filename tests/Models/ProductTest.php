@@ -92,7 +92,8 @@
          * @depends testRead
          * @return string $id
          */
-        public function testUpdate($id){
+        public function testUpdate($id)
+        {
             // Read the product
             $product = $this->productModel->read($id);
             $product->setName($product->getName() . self::UPDATE);
@@ -113,6 +114,28 @@
             $this->assertEquals($productUpdated->getDescription(), $product->getDescription());
             $this->assertEquals($productUpdated->getPrice(), $product->getPrice());
             return $id;
+        }
+
+        /**
+         * testDelete function
+         * It should delete the previous updated post
+         * 
+         * @param string $id
+         * @depends testUpdate
+         * @return void
+         */
+        public function testDelete($id)
+        {
+            // Delete the product
+            $res = $this->productModel->delete($id);
+
+            // Check for failure
+            $this->assertNotFalse($res);
+
+            // Check if not exist in db
+            $product = $this->productModel->read($id);
+            // Check if is null
+            $this->assertFalse($product);
         }
     }
 ?>

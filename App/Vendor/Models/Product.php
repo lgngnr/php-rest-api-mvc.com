@@ -131,10 +131,10 @@
         public function delete($id){
             // Prepare query
             $sql = "DELETE FROM products WHERE id = :id";
-            // Bind param
-            $this->db->bind(':id', $id);
             // Prepare stmt
             $this->db->query($sql);
+            // Bind param
+            $this->db->bind(':id', $id);
 
             // Execute query, return tru/false
             return $this->db->execute();
