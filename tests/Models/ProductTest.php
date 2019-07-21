@@ -137,5 +137,49 @@
             // Check if is null
             $this->assertFalse($product);
         }
+
+        /**
+         * testReadAll function
+         * It should return all products
+         * Products table should be empty
+         * @return void
+         */
+        public function testReadAllNoPagination(){
+            // Insert dummy products
+            $product1 = new Popo\Product(
+                self::ID_TEST,
+                self::NAME_TEST,
+                self::CATEGORY_ID_TEST,
+                self::DESCRIPTION_TEST,
+                self::PRICE_TEST
+            );
+            $product2 = new Popo\Product(
+                self::ID_TEST,
+                self::NAME_TEST,
+                self::CATEGORY_ID_TEST,
+                self::DESCRIPTION_TEST,
+                self::PRICE_TEST
+            );
+
+            // Add products1
+            $product1 = $this->productModel->create($product1);
+            // Check for failure
+            $this->assertNotFalse($product1);
+            // Add products2
+            $product2 = $this->productModel->create($product2);
+            // Check for failure
+            $this->assertNotFalse($product2);
+
+            // Read all
+            $records = $this->productModel->readAll();
+            // Check if return an array
+            $this->assertIsArray($records);
+            // Check if array items are two
+            $this->assertGreaterThanOrEqual(2, count($records));
+
+            // Delete inserted test products
+            $this->productModel->delete($product1->getId());
+            $this->productModel->delete($product2->getId());
+        }
     }
 ?>
