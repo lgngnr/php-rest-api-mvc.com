@@ -47,6 +47,7 @@
             if($this->db->execute())
             {
                 // Fill model
+                $this->id = $this->db->lastInsertId();
                 $this->name = $data['name'];
                 $this->category_id = $data['category_id'];
                 $this->description = $data['description'];

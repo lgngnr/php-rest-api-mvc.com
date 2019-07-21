@@ -82,10 +82,10 @@
                     case is_int($value):
                         $type = \PDO::PARAM_INT;
                         break;
-                    case is_bool($type):
+                    case is_bool($value):
                         $type = \PDO::PARAM_BOOL;
                         break;
-                    case is_null($type):
+                    case is_null($value):
                         $type = \PDO::PARAM_NULL;
                         break;
                     default:
@@ -141,12 +141,13 @@
 
         /**
          * lastInsertId function
-         *  Return last id inserted
+         *  Return last id inserted,
+         *  only if table contains autoincrement field
          * @return string
          */
         public function lastInsertId()
         {
-            return $this->stmt->lastInsertId();
+            return $this->conn->lastInsertId();
         }
 
     }

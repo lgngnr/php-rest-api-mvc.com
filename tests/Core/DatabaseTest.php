@@ -46,14 +46,9 @@
         public function testBind()
         {
             // Test query
-            $sql = "INSERT 
-                    INTO products(name, category_id, description, price) 
-                    VALUES(:name, :category_id, :description, :price)";
+            $sql = "SELECT * FROM products WHERE id = :id";
             $this->assertTrue($this->db->query($sql));
-            $this->assertTrue($this->db->bind(':name', "test"));
-            $this->assertTrue($this->db->bind(':name', 0));
-            $this->assertTrue($this->db->bind(':name', "test"));
-            $this->assertTrue($this->db->bind(':name', 1.0));
+            $this->assertTrue($this->db->bind(':id', 1));
         }
 
         /**
@@ -91,8 +86,12 @@
         public function testSingle()
         {
             // Test query
-            $sql = "SELECT * FROM products";
-            $this->assertTrue($this->db->query($sql));
+            $sql = "SELECT * FROM products WHERE id = :id";
+            // Preprare stmt
+            $this->db->query($sql);
+            // Bind params
+            $this->db->bind(':id', 2);
+            // Execute & fetch single row
             $record = $this->db->single();
             $this->assertIsObject($record);
         }
@@ -108,7 +107,27 @@
             $this->assertTrue($this->db->query($sql));
             $records = $this->db->single();
             $this->assertIsInt($this->db->rowCount());
-            $this->assertEquals(1, $this->db->rowCount());
+        }
+
+        public function testLastInsertId(){
+            $sql = "INSERT INTO products(name, category_id, description, price) 
+                    VALUES(:name, :category_id, :description, :price)";
+            $this->db->query($sql);
+            $this->db->bind(':name', "test");
+            $this->db->bind(':category_id', 0);
+            $this->db->bind(':description', "test");
+            $this->db->bind(':price', 1.0);
+            // Checking execution
+            if($this->db->execute())
+            {   // Success
+                $lastInsertId = $this->db->lastInsertId();
+                $this->assertIsString($lastInsertId);
+            }
+            else
+            {   // Fail
+                print("query execution fail");
+            }
+            
         }
     }
 ?>
