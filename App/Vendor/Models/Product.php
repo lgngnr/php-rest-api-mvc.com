@@ -1,6 +1,7 @@
 <?php
     namespace Vendor\Models;
     use Vendor\Core\Database;
+    use Vendor\Popo;
     /**
      * Product Model class
      * 
@@ -9,11 +10,6 @@
     class Product
     {
         private $db;
-        private $id;
-        private $name;
-        private $category_id;
-        private $description;
-        private $price;
 
         /**
          * __construct() function
@@ -27,10 +23,10 @@
         /**
          * create() function Crud
          * Insert new product
-         *
+         * @param Popo\Product $product
          * @return Product 
          */
-        public function create($data)
+        public function create($product)
         {
             // Prepare query
             $sql = "INSERT 
@@ -39,20 +35,16 @@
             // Prepare statement
             $this->db->query($sql);
             // Bind params
-            $this->db->bind(':name', $data['name']);
-            $this->db->bind(':category_id', $data['category_id']);
-            $this->db->bind(':description', $data['description']);
-            $this->db->bind(':price', $data['price']);
+            $this->db->bind(':name', $product->getName());
+            $this->db->bind(':category_id', $product->getCategory_id());
+            $this->db->bind(':description', $product->getDescription());
+            $this->db->bind(':price', $product->getPrice());
             // Execute query & check result
             if($this->db->execute())
             {
                 // Fill model
-                $this->id = $this->db->lastInsertId();
-                $this->name = $data['name'];
-                $this->category_id = $data['category_id'];
-                $this->description = $data['description'];
-                $this->price = $data['price'];
-                return $this;
+                $product->setId = $this->db->lastInsertId();
+                return $product;
             }
             else
             {
@@ -64,8 +56,8 @@
         /**
          * read() function cRud
          * Get a product
-         *
-         * @return Product 
+         * @param int $id
+         * @return Popo\Product 
          */
         public function read($id)
         {
@@ -79,13 +71,15 @@
             $res = $this->db->single();
             if($res)
             {
+                // Create new Product POPO
+                $product = new Popo\Product;
                 // Fill model
-                $this->id = $res->id;
-                $this->name = $res->name;
-                $this->category_id = $res->category_id;
-                $this->description = $res->description;
-                $this->price = $res->price;
-                return $this;
+                $product->seId = $res->id;
+                $product->setName = $res->name;
+                $product->setCategory_id = $res->category_id;
+                $product->setDescription = $res->description;
+                $product->setPrice = $res->price;
+                return $product;
             }
             else
             {
@@ -93,44 +87,6 @@
                 return false;
             }
         }
-
-        /**
-         * Get the value of id
-         */ 
-        public function getId()
-        {
-                return $this->id;
-        }
-        /**
-         * Get the value of name
-         */ 
-        public function getName()
-        {
-                return $this->name;
-        }
-
-        /**
-         * Get the value of category_id
-         */ 
-        public function getCategory_id()
-        {
-                return $this->category_id;
-        }
-
-        /**
-         * Get the value of description
-         */ 
-        public function getDescription()
-        {
-                return $this->description;
-        }
-
-        /**
-         * Get the value of price
-         */ 
-        public function getPrice()
-        {
-                return $this->price;
-        }
+        
     }
 ?>
