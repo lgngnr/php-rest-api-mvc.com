@@ -154,7 +154,7 @@
             // If $page is set, add pagination
             if($page && $page > 0) 
             {
-                $sql . " LIMIT :items, OFFSET :offset";
+                $sql .= " LIMIT :items OFFSET :offset";
                 // Prepare query
                 $this->db->query($sql);
                 $offset = ($page - 1) * $items;

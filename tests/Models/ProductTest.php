@@ -141,7 +141,7 @@
         /**
          * testReadAll function
          * It should return all products
-         * Products table should be empty
+         * 
          * @return void
          */
         public function testReadAllNoPagination(){
@@ -176,6 +176,61 @@
             $this->assertIsArray($records);
             // Check if array items are two
             $this->assertGreaterThanOrEqual(2, count($records));
+
+            // Delete inserted test products
+            $this->productModel->delete($product1->getId());
+            $this->productModel->delete($product2->getId());
+        }
+
+        /**
+         * testReadAllWithPagination function
+         * It should return products limit by LMITI per page
+         * Products table must be empty
+         * @return void
+         */
+        public function testReadAllWithPagination(){
+            // Insert dummy products
+            $product1 = new Popo\Product(
+                self::ID_TEST,
+                self::NAME_TEST,
+                self::CATEGORY_ID_TEST,
+                self::DESCRIPTION_TEST,
+                self::PRICE_TEST
+            );
+            $product2 = new Popo\Product(
+                self::ID_TEST,
+                self::NAME_TEST,
+                self::CATEGORY_ID_TEST,
+                self::DESCRIPTION_TEST,
+                self::PRICE_TEST
+            );
+
+            // Add products1
+            $product1 = $this->productModel->create($product1);
+            // Check for failure
+            $this->assertNotFalse($product1);
+            // Add products2
+            $product2 = $this->productModel->create($product2);
+            // Check for failure
+            $this->assertNotFalse($product2);
+
+            // Read 1 record/page page 1
+            $records = $this->productModel->readAll(1,1);
+            // Check if return an array
+            $this->assertIsArray($records);
+            // Check if array contain 1 item
+            $this->assertEquals(1, count($records));
+            // $records[0] should be $product1
+            $this->assertEquals($product1->getId(), $records[0]->id);
+
+            // Read 1 record/page page 2
+            $records = $this->productModel->readAll(1,2);
+            // Check if return an array
+            $this->assertIsArray($records);
+            // Check if array contain 1 item
+            $this->assertEquals(1, count($records));
+            // $records[0] should be $product2
+            $this->assertEquals($product2->getId(), $records[0]->id);
 
             // Delete inserted test products
             $this->productModel->delete($product1->getId());
