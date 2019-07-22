@@ -172,6 +172,54 @@ class Products extends Core\Controller
     }
 
     /**
+     * delete cruD function
+     * Delete a product if is a DELETE, send 405 Method not allowed otherwise
+     *
+     * @return void
+     */
+    public function delete($id =null)
+    {
+        if ($_SERVER['REQUEST_METHOD'] == 'DELETE' && isset($id))
+        {
+            // Sanitize $id
+            $id = filter_var($id, FILTER_SANITIZE_NUMBER_INT);
+
+            // Get product, format obj Popo\Product
+            $res = $this->productModel->delete($id);
+            
+            if ($res) 
+            {
+                $this->view(
+                    "products/index",
+                    array(
+                        'message' => "Product deleted"
+                    )
+                );
+            } 
+            else 
+            {
+                $this->view(
+                    "products/index",
+                    array(
+                        'message' => "An error occurred"
+                    )
+                );
+            }
+        }
+        else if(!isset($id))
+        {
+            // 400 Bad Request
+            http_response_code(400);
+        }
+        else
+        {
+            // 405 Method Not Allowed
+            http_response_code(405);
+            header('Access-Control-Allow-Method: DELETE');
+        }
+    }
+
+    /**
      * all function
      * It gets all products and load products/all view passing $data[]
      * @param integer $page - page number
