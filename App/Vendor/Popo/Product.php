@@ -11,11 +11,11 @@ class Product {
         private $price;
 
         public function __construct(
-            $id = null, 
-            $name = null, 
-            $category_id = null, 
-            $description =  null, 
-            $price = null)
+            $id = 0, 
+            $name = '', 
+            $category_id = 0, 
+            $description =  '', 
+            $price = 0.0)
         {
             $this->id =$id;
             $this->name =$name;

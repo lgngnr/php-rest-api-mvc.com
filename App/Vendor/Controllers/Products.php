@@ -1,7 +1,9 @@
 <?php
 
 namespace Vendor\Controllers;
+
 use Vendor\Core as Core;
+use Vendor\Popo;
 
 /**
  * Product Controller class
@@ -21,20 +23,54 @@ class Products extends Core\Controller
     }
 
     /**
-     * all function
-     * It gets all products and load products/all view passing $data[]
-     * @param integer $page - page number
-     * @param integer $items - items/page
-     * @return load requested view
+     * create Crud function
+     * Add a new product if is a POST, load product/create if GET
+     *
+     * @return void
      */
-    public function all($page = null, $items = null)
+    public function create()
     {
-        // Sanitize page and intems
-        $page = filter_var($page, FILTER_SANITIZE_NUMBER_INT);
-        $items = filter_var($items, FILTER_SANITIZE_NUMBER_INT);
-        // Get all products, format array[] of obj
-        $data = $this->productModel->readAll($page, $items);
-        $this->view("products/all", $data);
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+
+            // Get raw data
+            $data = json_decode(file_get_contents("php://input"));
+            
+            //Sanitize data
+            $data->name = filter_var($data->name, FILTER_SANITIZE_STRING);
+            $data->category_id = filter_var($data->category_id, FILTER_SANITIZE_NUMBER_INT);
+            $data->description = filter_var($data->description, FILTER_SANITIZE_STRING);
+            $data->price = filter_var($data->price, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+            return print_r($data);
+            // Fill Popo
+            $product = new Popo\Product(
+                0,
+                $data->name,
+                $data->category_id,
+                $data->description,
+                $data->price
+            );
+            // Create product
+            $res = $this->productModel->create($product);
+            // Check result
+            if ($res) {
+                $this->view(
+                    "products/create",
+                    array(
+                        'message' => "New product created"
+                    )
+                );
+            } else {
+                $this->view(
+                    "products/create",
+                    array(
+                        'message' => "An error occurred"
+                    )
+                );
+            }
+        } else {
+            http_response_code(405);
+            header('Access-Control-Allow-Method: POST');
+        }
     }
 
     /**
@@ -55,5 +91,24 @@ class Products extends Core\Controller
             'data' => $product->__getObj()
         );
         $this->view("products/read", $data);
+    }
+
+
+
+    /**
+     * all function
+     * It gets all products and load products/all view passing $data[]
+     * @param integer $page - page number
+     * @param integer $items - items/page
+     * @return load requested view
+     */
+    public function all($page = null, $items = null)
+    {
+        // Sanitize page and intems
+        $page = filter_var($page, FILTER_SANITIZE_NUMBER_INT);
+        $items = filter_var($items, FILTER_SANITIZE_NUMBER_INT);
+        // Get all products, format array[] of obj
+        $data = $this->productModel->readAll($page, $items);
+        $this->view("products/all", $data);
     }
 }
