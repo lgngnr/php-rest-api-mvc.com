@@ -24,13 +24,14 @@ class Products extends Core\Controller
 
     /**
      * create Crud function
-     * Add a new product if is a POST, load product/create if GET
+     * Add a new product if is a POST, send 405 Method not allowed otherwise
      *
      * @return void
      */
     public function create()
     {
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') 
+        {
 
             // Get raw data
             $data = json_decode(file_get_contents("php://input"));
@@ -40,7 +41,7 @@ class Products extends Core\Controller
             $data->category_id = filter_var($data->category_id, FILTER_SANITIZE_NUMBER_INT);
             $data->description = filter_var($data->description, FILTER_SANITIZE_STRING);
             $data->price = filter_var($data->price, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
-            return print_r($data);
+            
             // Fill Popo
             $product = new Popo\Product(
                 0,
@@ -52,14 +53,17 @@ class Products extends Core\Controller
             // Create product
             $res = $this->productModel->create($product);
             // Check result
-            if ($res) {
+            if ($res) 
+            {
                 $this->view(
                     "products/create",
                     array(
                         'message' => "New product created"
                     )
                 );
-            } else {
+            } 
+            else 
+            {
                 $this->view(
                     "products/create",
                     array(
@@ -67,7 +71,9 @@ class Products extends Core\Controller
                     )
                 );
             }
-        } else {
+        }
+        else 
+        {
             http_response_code(405);
             header('Access-Control-Allow-Method: POST');
         }
@@ -80,20 +86,34 @@ class Products extends Core\Controller
      * 
      * @return load requested view
      */
-    public function read($id)
+    public function read($id = null)
     {
-        // Sanitize $id
-        $id = filter_var($id, FILTER_SANITIZE_NUMBER_INT);
+        if ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($id))
+        {
+            // Sanitize $id
+            $id = filter_var($id, FILTER_SANITIZE_NUMBER_INT);
 
-        // Get product, format obj Popo\Product
-        $product = $this->productModel->read($id);
-        $data = array(
-            'data' => $product->__getObj()
-        );
-        $this->view("products/read", $data);
+            // Get product, format obj Popo\Product
+            $product = $this->productModel->read($id);
+            $data = array(
+                'data' => $product->__getObj()
+            );
+            $this->view("products/read", $data);
+        }
+        else if(!isset($id))
+        {
+            // 400 Bad Request
+            http_response_code(400);
+        }
+        else
+        {
+            // 405 Method Not Allowed
+            http_response_code(405);
+            header('Access-Control-Allow-Method: GET');
+        }
     }
 
-
+    
 
     /**
      * all function
