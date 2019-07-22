@@ -148,7 +148,7 @@
          * $param int $page - page number
          * @return array of OBJs
          */
-        public function readAll($page = null, $items = 20){
+        public function readAll($page = null, $items = null){
             // Prepare query
             $sql = "SELECT * FROM products";
             // If $page is set, add pagination
@@ -157,9 +157,11 @@
                 $sql .= " LIMIT :items OFFSET :offset";
                 // Prepare query
                 $this->db->query($sql);
+                $items = isset($items) ? intval($items) : 20;
                 $offset = ($page - 1) * $items;
                 $this->db->bind(':items', $items);
                 $this->db->bind(':offset', $offset);
+                //echo "items: $items " . gettype($items);
             }  
             else
             {   // Prepare query

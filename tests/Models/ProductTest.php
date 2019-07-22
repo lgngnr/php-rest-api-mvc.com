@@ -224,7 +224,7 @@
             $this->assertEquals($product1->getId(), $records[0]->id);
 
             // Read 1 record/page page 2
-            $records = $this->productModel->readAll(1,2);
+            $records = $this->productModel->readAll(2,1);
             // Check if return an array
             $this->assertIsArray($records);
             // Check if array contain 1 item
