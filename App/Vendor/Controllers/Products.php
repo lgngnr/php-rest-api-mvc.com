@@ -25,10 +25,10 @@ class Products extends Core\Controller
      * It gets all products and load products/all view passing $data[]
      * @return load requested view
      */
-    public function all($items = null, $page = null)
+    public function all($page = null, $items = null)
     {
         // Get all products, format array[] of obj
-        $data = $this->productModel->readAll();
+        $data = $this->productModel->readAll($page, $items);
         $this->view("products/all", $data);
     }
 }

@@ -148,7 +148,7 @@
          * $param int $page - page number
          * @return array of OBJs
          */
-        public function readAll($items = 20, $page = null){
+        public function readAll($page = null, $items = 20){
             // Prepare query
             $sql = "SELECT * FROM products";
             // If $page is set, add pagination
