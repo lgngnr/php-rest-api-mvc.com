@@ -121,6 +121,14 @@
 
                 return $this;
         }
+
+        public function __toString(){
+                return "id=>" . $this->getId()
+                        . "\n name=> " . $this->getName()
+                        . "\n category_id=> " . $this->getCategory_id()
+                        . "\n description=> " . $this->getdescription()
+                        . "\n price=> " . $this->getPrice();
+        }
     }
 
 ?>
