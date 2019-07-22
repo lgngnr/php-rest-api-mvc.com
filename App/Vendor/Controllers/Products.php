@@ -32,7 +32,6 @@ class Products extends Core\Controller
     {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') 
         {
-
             // Get raw data
             $data = json_decode(file_get_contents("php://input"));
             
@@ -56,7 +55,7 @@ class Products extends Core\Controller
             if ($res) 
             {
                 $this->view(
-                    "products/create",
+                    "products/index",
                     array(
                         'message' => "New product created"
                     )
@@ -65,7 +64,7 @@ class Products extends Core\Controller
             else 
             {
                 $this->view(
-                    "products/create",
+                    "products/index",
                     array(
                         'message' => "An error occurred"
                     )
@@ -98,7 +97,7 @@ class Products extends Core\Controller
             $data = array(
                 'data' => $product->__getObj()
             );
-            $this->view("products/read", $data);
+            $this->view("products/index", $data);
         }
         else if(!isset($id))
         {
@@ -113,7 +112,64 @@ class Products extends Core\Controller
         }
     }
 
-    
+    /**
+     * update crUd function
+     * Update a product if is a PUT, send 405 Method not allowed otherwise
+     *
+     * @return void
+     */
+    public function update()
+    {
+        if ($_SERVER['REQUEST_METHOD'] == 'PUT') 
+        {
+
+            // Get raw data
+            $data = json_decode(file_get_contents("php://input"));
+            
+            //Sanitize data
+            $data->id = filter_var($data->id, FILTER_SANITIZE_NUMBER_INT);
+            $data->name = filter_var($data->name, FILTER_SANITIZE_STRING);
+            $data->category_id = filter_var($data->category_id, FILTER_SANITIZE_NUMBER_INT);
+            $data->description = filter_var($data->description, FILTER_SANITIZE_STRING);
+            $data->price = filter_var($data->price, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+            
+            // Fill Popo
+            $product = new Popo\Product(
+                $data->id,
+                $data->name,
+                $data->category_id,
+                $data->description,
+                $data->price
+            );
+
+            // Create product
+            $res = $this->productModel->update($product);
+            // Check result
+            if ($res) 
+            {
+                $this->view(
+                    "products/index",
+                    array(
+                        'message' => "Product updated"
+                    )
+                );
+            } 
+            else 
+            {
+                $this->view(
+                    "products/index",
+                    array(
+                        'message' => "An error occurred"
+                    )
+                );
+            }
+        } 
+        else 
+        {
+            http_response_code(405);
+            header('Access-Control-Allow-Method: PUT');
+        }
+    }
 
     /**
      * all function

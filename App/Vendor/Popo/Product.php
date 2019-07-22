@@ -17,11 +17,11 @@ class Product {
             $description =  '', 
             $price = 0.0)
         {
-            $this->id =$id;
-            $this->name =$name;
-            $this->category_id =$category_id;
-            $this->description =$description;
-            $this->price =$price;
+            $this->id = $id;
+            $this->name = $name;
+            $this->category_id = $category_id;
+            $this->description = $description;
+            $this->price = $price;
         }
 
         /**
@@ -128,7 +128,7 @@ class Product {
                 return "id=>" . $this->getId()
                         . "\n name=> " . $this->getName()
                         . "\n category_id=> " . $this->getCategory_id()
-                        . "\n description=> " . $this->getdescription()
+                        . "\n description=> " . $this->getDescription()
                         . "\n price=> " . $this->getPrice();
         }
 
