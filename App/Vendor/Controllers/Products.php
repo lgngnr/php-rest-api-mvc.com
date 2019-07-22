@@ -27,6 +27,9 @@ class Products extends Core\Controller
      */
     public function all($page = null, $items = null)
     {
+        // Sanitize page and intems
+        $page = filter_var($page, FILTER_SANITIZE_NUMBER_INT);
+        $items = filter_var($items, FILTER_SANITIZE_NUMBER_INT);
         // Get all products, format array[] of obj
         $data = $this->productModel->readAll($page, $items);
         $this->view("products/all", $data);

@@ -157,11 +157,10 @@
                 $sql .= " LIMIT :items OFFSET :offset";
                 // Prepare query
                 $this->db->query($sql);
-                $items = isset($items) ? intval($items) : 20;
+                $items = $items ? intval($items) : 20;
                 $offset = ($page - 1) * $items;
                 $this->db->bind(':items', $items);
                 $this->db->bind(':offset', $offset);
-                //echo "items: $items " . gettype($items);
             }  
             else
             {   // Prepare query
