@@ -1,7 +1,9 @@
 <?php
     namespace Vendor\Popo;
 
-    class Product {
+use stdClass;
+
+class Product {
         private $id;
         private $name;
         private $category_id;
@@ -128,6 +130,23 @@
                         . "\n category_id=> " . $this->getCategory_id()
                         . "\n description=> " . $this->getdescription()
                         . "\n price=> " . $this->getPrice();
+        }
+
+        /**
+         * __getObj function
+         * Fill an sdtClass with product property
+         *
+         * @return obj
+         */
+        public function __getObj()
+        {
+                $obj = new stdClass;
+                $obj->id = $this->getId(); 
+                $obj->name = $this->getName(); 
+                $obj->category_id = $this->getCategory_id(); 
+                $obj->description = $this->getDescription(); 
+                $obj->price = $this->getPrice(); 
+                return $obj;
         }
     }
 
