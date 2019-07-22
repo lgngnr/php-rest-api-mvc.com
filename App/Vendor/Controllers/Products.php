@@ -233,6 +233,6 @@ class Products extends Core\Controller
         $items = filter_var($items, FILTER_SANITIZE_NUMBER_INT);
         // Get all products, format array[] of obj
         $data = $this->productModel->readAll($page, $items);
-        $this->view("products/all", $data);
+        $this->view("products/index", $data);
     }
 }
