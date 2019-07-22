@@ -22,14 +22,72 @@ class Products extends Core\Controller
         $this->productModel = $this->model('Product');
     }
 
+    /**
+     * index function
+     * According to the REQUEST_METHOD execute the correct CRUD OP
+     * Return 405 if method not allowed
+     *
+     * @param array ...$args
+     *
+     * @return void
+     */
     public function index(...$args){
-        $this->view(
-            "products/index",
-            array(
-                'message' => "Hello",
-                'data' => $args
-            )
-        );
+
+        // Check HTTP METHOD
+        switch($_SERVER['REQUEST_METHOD'])
+        {
+            case 'GET':
+                if(count($args) == 1)
+                {
+                    $this->read($args[0]);
+                }
+                else if(count($args) == 2)
+                {
+                    $this->readAll($args[0], $args[1]);
+                }
+                else
+                {
+                    // 400 Bad Request
+                    http_response_code(400);
+                }
+                break;
+            case 'POST':
+                if(count($args) == 0)
+                {
+                    $this->create();
+                }
+                else
+                {
+                    // 400 Bad Request
+                    http_response_code(400);
+                }
+                break;
+            case 'PUT':
+                if(count($args) == 0)
+                {
+                    $this->update();
+                }
+                else
+                {
+                    // 400 Bad Request
+                    http_response_code(400);
+                }
+                break;
+            case 'DELETE':
+                if(count($args) == 1)
+                {
+                    $this->delete($args[0]);
+                }
+                else
+                {
+                    // 400 Bad Request
+                    http_response_code(400);
+                }
+                break;
+            default:
+                http_response_code(405);
+                header('Access-Control-Allow-Method: GET,POST,PUT,DELETE');
+        }
     }
 
     /**
@@ -38,7 +96,7 @@ class Products extends Core\Controller
      *
      * @return void
      */
-    public function create()
+    private function create()
     {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') 
         {
@@ -95,7 +153,7 @@ class Products extends Core\Controller
      * 
      * @return load requested view
      */
-    public function read($id = null)
+    private function read($id = null)
     {
         if ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($id))
         {
@@ -128,7 +186,7 @@ class Products extends Core\Controller
      *
      * @return void
      */
-    public function update()
+    private function update()
     {
         if ($_SERVER['REQUEST_METHOD'] == 'PUT') 
         {
@@ -187,7 +245,7 @@ class Products extends Core\Controller
      *
      * @return void
      */
-    public function delete($id =null)
+    private function delete($id =null)
     {
         if ($_SERVER['REQUEST_METHOD'] == 'DELETE' && isset($id))
         {
@@ -236,7 +294,7 @@ class Products extends Core\Controller
      * @param integer $items - items/page
      * @return load requested view
      */
-    public function all($page = null, $items = null)
+    private function readAll($page = null, $items = null)
     {
         // Sanitize page and intems
         $page = filter_var($page, FILTER_SANITIZE_NUMBER_INT);
