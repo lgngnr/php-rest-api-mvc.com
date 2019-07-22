@@ -22,6 +22,16 @@ class Products extends Core\Controller
         $this->productModel = $this->model('Product');
     }
 
+    public function index(...$args){
+        $this->view(
+            "products/index",
+            array(
+                'message' => "Hello",
+                'data' => $args
+            )
+        );
+    }
+
     /**
      * create Crud function
      * Add a new product if is a POST, send 405 Method not allowed otherwise

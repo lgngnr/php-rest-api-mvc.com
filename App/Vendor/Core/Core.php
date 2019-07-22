@@ -45,11 +45,10 @@ class Core
             // Check if method exists
             if (method_exists($this->current_controller, $url[1])) {
                 $this->current_method = $url[1];
+                // Remove url[1]
+                unset($url[1]);
             }
         }
-
-        // Remove url[1]
-        unset($url[1]);
 
         // Get params
         $this->params = $url ? array_values($url) : [];
