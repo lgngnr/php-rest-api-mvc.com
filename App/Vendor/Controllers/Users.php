@@ -11,7 +11,7 @@ use Vendor\Helpers\Helpers;
  */
 class Users extends Core\Controller
 {
-    private $productModel;
+    private $userModel;
 
     /**
      * __construct function

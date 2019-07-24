@@ -1,7 +1,7 @@
 <?php
     namespace Vendor\Models;
 
-    use Firebase\JWT;
+    use Firebase\JWT\JWT;
     use Vendor\Core\Database;
 
     /**
@@ -42,7 +42,7 @@
                 if(password_verify($password, $res->password))
                 {
                     // Generate auth token
-                    return JWT::sign($email, '123456');
+                    return JWT::encode(array('email'=>$email), '123456');
                 }
                 else
                 {
@@ -59,6 +59,8 @@
         }
 
         public function register($name, $email, $password){
+            // Hash password
+            $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
              // Set query
              $sql = "INSERT INTO users(name, email, password) VALUES (:name, :email, :password)";
              // Prepare STMT
@@ -66,7 +68,7 @@
              // Bind param
              $this->db->bind(':name', $name);
              $this->db->bind(':email', $email);
-             $this->db->bind(':password', $password);
+             $this->db->bind(':password', $hashedPassword);
              // Execute
              return $this->db->execute();
         }
