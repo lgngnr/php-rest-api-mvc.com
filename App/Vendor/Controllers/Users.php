@@ -30,17 +30,16 @@ class Users extends Core\Controller
     public function login()
     {
 
-        if( $_SERVER['REQUEST_METHOD'] != 'POST')
-        {
+        if ($_SERVER['REQUEST_METHOD'] != 'POST') {
             // send 405 method Not Allowed
             return Helpers::methodNotAllowed('POST');
         }
 
         // Get raw data
         $data = json_decode(file_get_contents("php://input"));
-            
+
         //Sanitize data
-        $data->email = filter_var($data->name, FILTER_SANITIZE_EMAIL);
+        $data->email = filter_var($data->email, FILTER_SANITIZE_EMAIL);
         // Later set Password rule
         $data->password = $data->password;
 
@@ -48,18 +47,53 @@ class Users extends Core\Controller
         $res = $this->userModel->authenticate($data->email, $data->password);
 
         // Check for success
-        if($res)
-        {
+        if ($res) {
             // Send back auth header
             Helpers::authorized($res);
-        }
-        else
-        {
+        } else {
             // Invalid credential send 401 Unauthorized back
             Helpers::unauthorized();
         }
-
     }
 
+    /**
+     * register function
+     * register a new user
+     * @return void
+     */
+    public function register(){
+        if ($_SERVER['REQUEST_METHOD'] != 'POST') {
+            // send 405 method Not Allowed
+            return Helpers::methodNotAllowed('POST');
+        }
 
+        // Get raw data
+        $data = json_decode(file_get_contents("php://input"));
+
+        //Sanitize data
+        $data->name = filter_var($data->name, FILTER_SANITIZE_STRING);
+        $data->email = filter_var($data->email, FILTER_SANITIZE_EMAIL);
+        // Later set Password rule
+        $data->password = $data->password;
+
+        // Register
+        $res = $this->userModel->register($data->name, $data->email, $data->password);
+
+        // Check for success
+        if ($res) {
+            $this->view(
+                "users/index",
+                array(
+                    'message' => "New user created"
+                )
+            );
+        } else {
+            $this->view(
+                "users/index",
+                array(
+                    'message' => "Wrong data"
+                )
+            );
+        }
+    }
 }
