@@ -33,7 +33,7 @@ class Users extends Core\Controller
         if( $_SERVER['REQUEST_METHOD'] != 'POST')
         {
             // send 405 method Not Allowed
-            Helpers::methodNotAllowed('POST');
+            return Helpers::methodNotAllowed('POST');
         }
 
         // Get raw data
