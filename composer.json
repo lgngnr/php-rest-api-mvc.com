@@ -6,5 +6,8 @@
         "psr-4": {
             "Vendor\\": "App/Vendor"
         }
+    },
+    "require": {
+        "web-token/jwt-framework": "^2.0"
     }
 }
