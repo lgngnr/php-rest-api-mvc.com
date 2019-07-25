@@ -49,7 +49,7 @@ class Users extends Core\Controller
         // Check for success
         if ($res) {
             // Send back auth header
-            Helpers::authorized($res);
+            Helpers::setAuthorizationToken($res);
         } else {
             // Invalid credential send 401 Unauthorized back
             Helpers::unauthorized();
