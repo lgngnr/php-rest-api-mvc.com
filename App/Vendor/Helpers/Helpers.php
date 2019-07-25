@@ -1,6 +1,11 @@
 <?php
     namespace Vendor\Helpers;
 
+    use Firebase\JWT\JWT;
+    use Firebase\JWT\DomainException;
+    use Firebase\JWT\InvalidArgumentException;
+    use Firebase\JWT\UnexpectedValueException;
+
     /**
      * Helpers class
      * 
@@ -56,6 +61,47 @@
          */
         public static function authorized($token){
             header("Authorization: Bearer $token");
+        }
+
+        /**
+         * generateToken function
+         * generate JWT token
+         * @param array $data
+         *
+         * @return string
+         */
+        public static function generateToken($data)
+        {
+            $time = time();
+            $exp = $time + TOKEN_EXP;
+            return JWT::encode($data, TOKEN_SECRET, 'HS256', null, [
+                'iat' => $time,
+                'exp' => $exp
+            ]);
+        }
+
+        /**
+         * validateToken function
+         *
+         * @param string $token
+         * 
+         * @throws DomainException
+         * @throws InvalidArgumentException
+         * @throws UnexpectedValueException
+         * @return string
+         */
+        public static function validateToken($token)
+        {
+            try
+            {
+                return JWT::decode($token, TOKEN_SECRET);
+            }
+            catch(DomainException | InvalidArgumentException | UnexpectedValueException $e )
+            {
+                // Invalid token or expired send 401 back
+                self::unauthorized();
+            }
+            
         }
     }
 ?>
