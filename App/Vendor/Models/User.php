@@ -3,6 +3,7 @@
 
     use Firebase\JWT\JWT;
     use Vendor\Core\Database;
+    use Vendor\Helpers\Helpers;
 
     /**
      * User class
@@ -42,7 +43,7 @@
                 if(password_verify($password, $res->password))
                 {
                     // Generate auth token
-                    return JWT::encode(array('email'=>$email), '123456');
+                    return Helpers::generateToken(array('email'=>$email));
                 }
                 else
                 {
