@@ -4,6 +4,7 @@ namespace Vendor\Controllers;
 
 use Vendor\Core as Core;
 use Vendor\Popo;
+use Vendor\Helpers\Helpers;
 
 /**
  * Product Controller class
@@ -31,57 +32,59 @@ class Products extends Core\Controller
      *
      * @return void
      */
-    public function index(...$args){
-
+    public function index(...$args)
+    {
         // Check HTTP METHOD
-        switch($_SERVER['REQUEST_METHOD'])
-        {
+        switch ($_SERVER['REQUEST_METHOD']) {
             case 'GET':
-                if(count($args) == 1)
-                {
-                    $this->read($args[0]);
+                if (Helpers::authorize()) {
+                    if (count($args) == 1) {
+                        $this->read($args[0]);
+                    } else if (count($args) == 2) {
+                        $this->readAll($args[0], $args[1]);
+                    } else {
+                        // 400 Bad Request
+                        http_response_code(400);
+                    }
+                } else {
+                    Helpers::unauthorized();
                 }
-                else if(count($args) == 2)
-                {
-                    $this->readAll($args[0], $args[1]);
-                }
-                else
-                {
-                    // 400 Bad Request
-                    http_response_code(400);
-                }
+
                 break;
             case 'POST':
-                if(count($args) == 0)
-                {
-                    $this->create();
-                }
-                else
-                {
-                    // 400 Bad Request
-                    http_response_code(400);
+                if (Helpers::authorize()) {
+                    if (count($args) == 0) {
+                        $this->create();
+                    } else {
+                        // 400 Bad Request
+                        http_response_code(400);
+                    }
+                } else {
+                    Helpers::unauthorized();
                 }
                 break;
             case 'PUT':
-                if(count($args) == 0)
-                {
-                    $this->update();
-                }
-                else
-                {
-                    // 400 Bad Request
-                    http_response_code(400);
+                if (Helpers::authorize()) {
+                    if (count($args) == 0) {
+                        $this->update();
+                    } else {
+                        // 400 Bad Request
+                        http_response_code(400);
+                    }
+                } else {
+                    Helpers::unauthorized();
                 }
                 break;
             case 'DELETE':
-                if(count($args) == 1)
-                {
-                    $this->delete($args[0]);
-                }
-                else
-                {
-                    // 400 Bad Request
-                    http_response_code(400);
+                if (Helpers::authorize()) {
+                    if (count($args) == 1) {
+                        $this->delete($args[0]);
+                    } else {
+                        // 400 Bad Request
+                        http_response_code(400);
+                    }
+                } else {
+                    Helpers::unauthorized();
                 }
                 break;
             default:
@@ -92,57 +95,46 @@ class Products extends Core\Controller
 
     /**
      * create Crud function
-     * Add a new product if is a POST, send 405 Method not allowed otherwise
+     * Add a new product if is a POST
      *
      * @return void
      */
     private function create()
     {
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') 
-        {
-            // Get raw data
-            $data = json_decode(file_get_contents("php://input"));
-            
-            //Sanitize data
-            $data->name = filter_var($data->name, FILTER_SANITIZE_STRING);
-            $data->category_id = filter_var($data->category_id, FILTER_SANITIZE_NUMBER_INT);
-            $data->description = filter_var($data->description, FILTER_SANITIZE_STRING);
-            $data->price = filter_var($data->price, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
-            
-            // Fill Popo
-            $product = new Popo\Product(
-                0,
-                $data->name,
-                $data->category_id,
-                $data->description,
-                $data->price
+        // Get raw data
+        $data = json_decode(file_get_contents("php://input"));
+
+        //Sanitize data
+        $data->name = filter_var($data->name, FILTER_SANITIZE_STRING);
+        $data->category_id = filter_var($data->category_id, FILTER_SANITIZE_NUMBER_INT);
+        $data->description = filter_var($data->description, FILTER_SANITIZE_STRING);
+        $data->price = filter_var($data->price, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+
+        // Fill Popo
+        $product = new Popo\Product(
+            0,
+            $data->name,
+            $data->category_id,
+            $data->description,
+            $data->price
+        );
+        // Create product
+        $res = $this->productModel->create($product);
+        // Check result
+        if ($res) {
+            $this->view(
+                "products/index",
+                array(
+                    'message' => "New product created"
+                )
             );
-            // Create product
-            $res = $this->productModel->create($product);
-            // Check result
-            if ($res) 
-            {
-                $this->view(
-                    "products/index",
-                    array(
-                        'message' => "New product created"
-                    )
-                );
-            } 
-            else 
-            {
-                $this->view(
-                    "products/index",
-                    array(
-                        'message' => "An error occurred"
-                    )
-                );
-            }
-        }
-        else 
-        {
-            http_response_code(405);
-            header('Access-Control-Allow-Method: POST');
+        } else {
+            $this->view(
+                "products/index",
+                array(
+                    'message' => "An error occurred"
+                )
+            );
         }
     }
 
@@ -155,8 +147,7 @@ class Products extends Core\Controller
      */
     private function read($id = null)
     {
-        if ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($id))
-        {
+        if (isset($id)) {
             // Sanitize $id
             $id = filter_var($id, FILTER_SANITIZE_NUMBER_INT);
 
@@ -166,76 +157,56 @@ class Products extends Core\Controller
                 'data' => $product->__getObj()
             );
             $this->view("products/index", $data);
-        }
-        else if(!isset($id))
-        {
+        } else {
             // 400 Bad Request
             http_response_code(400);
-        }
-        else
-        {
-            // 405 Method Not Allowed
-            http_response_code(405);
-            header('Access-Control-Allow-Method: GET');
         }
     }
 
     /**
      * update crUd function
-     * Update a product if is a PUT, send 405 Method not allowed otherwise
+     * Update a product if is a PUT
      *
      * @return void
      */
     private function update()
     {
-        if ($_SERVER['REQUEST_METHOD'] == 'PUT') 
-        {
+        // Get raw data
+        $data = json_decode(file_get_contents("php://input"));
 
-            // Get raw data
-            $data = json_decode(file_get_contents("php://input"));
-            
-            //Sanitize data
-            $data->id = filter_var($data->id, FILTER_SANITIZE_NUMBER_INT);
-            $data->name = filter_var($data->name, FILTER_SANITIZE_STRING);
-            $data->category_id = filter_var($data->category_id, FILTER_SANITIZE_NUMBER_INT);
-            $data->description = filter_var($data->description, FILTER_SANITIZE_STRING);
-            $data->price = filter_var($data->price, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
-            
-            // Fill Popo
-            $product = new Popo\Product(
-                $data->id,
-                $data->name,
-                $data->category_id,
-                $data->description,
-                $data->price
+        //Sanitize data
+        $data->id = filter_var($data->id, FILTER_SANITIZE_NUMBER_INT);
+        $data->name = filter_var($data->name, FILTER_SANITIZE_STRING);
+        $data->category_id = filter_var($data->category_id, FILTER_SANITIZE_NUMBER_INT);
+        $data->description = filter_var($data->description, FILTER_SANITIZE_STRING);
+        $data->price = filter_var($data->price, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+
+        // Fill Popo
+        $product = new Popo\Product(
+            $data->id,
+            $data->name,
+            $data->category_id,
+            $data->description,
+            $data->price
+        );
+
+        // Create product
+        $res = $this->productModel->update($product);
+        // Check result
+        if ($res) {
+            $this->view(
+                "products/index",
+                array(
+                    'message' => "Product updated"
+                )
             );
-
-            // Create product
-            $res = $this->productModel->update($product);
-            // Check result
-            if ($res) 
-            {
-                $this->view(
-                    "products/index",
-                    array(
-                        'message' => "Product updated"
-                    )
-                );
-            } 
-            else 
-            {
-                $this->view(
-                    "products/index",
-                    array(
-                        'message' => "An error occurred"
-                    )
-                );
-            }
-        } 
-        else 
-        {
-            http_response_code(405);
-            header('Access-Control-Allow-Method: PUT');
+        } else {
+            $this->view(
+                "products/index",
+                array(
+                    'message' => "An error occurred"
+                )
+            );
         }
     }
 
@@ -245,27 +216,23 @@ class Products extends Core\Controller
      *
      * @return void
      */
-    private function delete($id =null)
+    private function delete($id = null)
     {
-        if ($_SERVER['REQUEST_METHOD'] == 'DELETE' && isset($id))
-        {
+        if (isset($id)) {
             // Sanitize $id
             $id = filter_var($id, FILTER_SANITIZE_NUMBER_INT);
 
             // Get product, format obj Popo\Product
             $res = $this->productModel->delete($id);
-            
-            if ($res) 
-            {
+
+            if ($res) {
                 $this->view(
                     "products/index",
                     array(
                         'message' => "Product deleted"
                     )
                 );
-            } 
-            else 
-            {
+            } else {
                 $this->view(
                     "products/index",
                     array(
@@ -273,17 +240,9 @@ class Products extends Core\Controller
                     )
                 );
             }
-        }
-        else if(!isset($id))
-        {
+        } else {
             // 400 Bad Request
             http_response_code(400);
-        }
-        else
-        {
-            // 405 Method Not Allowed
-            http_response_code(405);
-            header('Access-Control-Allow-Method: DELETE');
         }
     }
 
