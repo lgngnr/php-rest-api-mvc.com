@@ -12,6 +12,6 @@
 
     // JWT TOKEN SECRET
     define('TOKEN_SECRET', "ZP*R&G8'Z%eBO-/inVf*c$1sB`JBn#/[Y");
-    define('TOKEN_EXP', 30000); //ms
+    define('TOKEN_EXP', 3600000); //ms 1h
 
 ?>
